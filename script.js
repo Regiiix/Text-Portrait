@@ -7,17 +7,24 @@ function fillText() {
     container.textContent = lyrics.repeat(repeatCount);
 }
 
-const BASE_FONT_SIZE = 4;
-const BASE_LINE_HEIGHT = 4;
+function getBaseSize() {
+    const w = window.innerWidth;
+    if (w <= 360) return 2;
+    if (w <= 480) return 2.5;
+    if (w <= 768) return 3;
+    if (w <= 1024) return 3.5;
+    return 4;
+}
+
 let initialDPR = window.devicePixelRatio || 1;
 
 function adjustForZoom() {
     const currentDPR = window.devicePixelRatio || 1;
     const zoomLevel = currentDPR / initialDPR;
+    const baseSize = getBaseSize();
     const container = document.getElementById('text-portrait');
-    // Shrink text inversely to zoom so it stays the same visual size
-    container.style.fontSize = (BASE_FONT_SIZE / zoomLevel) + 'px';
-    container.style.lineHeight = (BASE_LINE_HEIGHT / zoomLevel) + 'px';
+    container.style.fontSize = (baseSize / zoomLevel) + 'px';
+    container.style.lineHeight = (baseSize / zoomLevel) + 'px';
 }
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -25,3 +32,6 @@ window.addEventListener('DOMContentLoaded', () => {
     adjustForZoom();
 });
 window.addEventListener('resize', adjustForZoom);
+window.addEventListener('orientationchange', () => {
+    setTimeout(adjustForZoom, 100);
+});
